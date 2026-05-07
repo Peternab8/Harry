@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Special Gift</title>
+
+    <link rel="preload" as="image" href="image1.jpg">
+    <link rel="preload" as="image" href="image2.jpg">
+    <link rel="preload" as="image" href="image3.jpg">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Caveat:wght@700&family=Cormorant+Garamond:wght@400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --dark-bg: linear-gradient(-45deg, #020205, #0a0a14, #050810, #000000);
+            --wand-core: #ffde59; /* Default, will be randomized by JS */
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            overflow-x: hidden;
+            background-color: #050505;
+            color: #ebd8b7;
+            transition: filter 2s ease, background-color 2s ease;
+            perspective: 1200px;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='24' font-size='24'%3E🪄%3C/text%3E%3C/svg%3E"), auto;
+        }
+
+        /* 🎬 Black Cinematic Bars 🎬 */
+        body::after {
+            content: ''; position: fixed; inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,.9) 0%, transparent 10%, transparent 90%, rgba(0,0,0,.9) 100%);
+            pointer-events: none; z-index: 9998; transition: opacity 1s;
+        }
+
+        /* 🌌 Deep Space Parallax / Marauder's Layer 🌌 */
+        body::before {
+            content: ''; position: fixed; inset: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255,215,0,.04), transparent 30%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,.02), transparent 30%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 0; background-blend-mode: screen;
+        }
+
+        /* 🌫️ Fog Layers 🌫️ */
+        .fog { position: fixed; width: 200%; height: 400px; background: radial-gradient(circle, rgba(255,255,255,.03), transparent 70%); filter: blur(60px); animation: fogMove 40s linear infinite; pointer-events: none; z-index: 1; transition: opacity 2s; }
+        .fog1 { top: 5%; animation-duration: 45s; }
+        .fog2 { bottom: -10%; animation-delay: -15s; animation-duration: 55s; }
+        @keyframes fogMove { from { transform: translateX(-20%); } to { transform: translateX(20%); } }
+
+        button, .envelope-container, .cake-slice, .slider-container, #lumos-btn, #memory-btn {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='24' font-size='24'%3E🪄%3C/text%3E%3C/svg%3E"), pointer;
+        }
+
+        .screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.6s ease, visibility 0.6s ease; z-index: 10; }
+        .hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+        /* --- White Flash Effect --- */
+        #white-flash { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #fff; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.15s ease; }
+        .flash-active { opacity: 1 !important; }
+
+        /* ⚡ 11. Platform 9¾ Entry Transition ⚡ */
+        .platform-dash { animation: platformZoom 1.8s cubic-bezier(0.5, 0, 0.2, 1) forwards; }
+        @keyframes platformZoom {
+            0% { transform: scale(1) translateZ(0); opacity: 1; filter: blur(0); }
+            30% { transform: scale(0.9) translateZ(-50px); opacity: 1; filter: blur(2px); }
+            100% { transform: scale(6) translateZ(600px); opacity: 0; filter: blur(40px) brightness(2); }
+        }
+
+        /* 💀 7. Dementor Moment 💀 */
+        .dementor-active {
+            filter: grayscale(100%) brightness(40%) contrast(120%) !important;
+            animation: dementorShake 0.5s infinite;
+        }
+        @keyframes dementorShake { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-1px, 1px); } }
+
+        /* 💥 Wand Impact (Final Twist) 💥 */
+        .impact-shake { animation: impactShake 0.5s cubic-bezier(.36,.07,.19,.97) both; filter: invert(1) brightness(1.5) contrast(1.2); }
+        @keyframes impactShake { 0%, 100% { transform: translate3d(0, 0, 0); } 10%, 30%, 50%, 70%, 90% { transform: translate3d(-15px, 15px, 0) scale(1.02); } 20%, 40%, 60%, 80% { transform: translate3d(15px, -15px, 0) scale(0.98); } }
+
+        /* --- Cinematic Intro --- */
+        #intro-screen { background: #000; color: #fff; z-index: 50; }
+        .cinematic-text { font-family: 'Cinzel', serif; font-weight: 400; letter-spacing: 3px; font-size: 1.2rem; opacity: 0; transition: opacity 0.8s ease; position: absolute; text-align: center; width: 100%; padding: 0 20px;}
+        .cinematic-text.show { opacity: 1; }
+
+        /* --- Envelope Screen --- */
+        #envelope-screen { background-color: #020202; z-index: 20; color: #fff; }
+        .envelope-container { padding: 20px; text-align: center; transition: transform 0.2s ease; opacity: 0; animation: fadeInName 1s ease forwards 0.5s; position: relative; z-index: 2;}
+        .envelope-container:active { transform: scale(0.95); }
+        @keyframes fadeInName { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 🦉 Delayed Owl Shadow & Feather 🦉 */
+        .owl-shadow { position: fixed; font-size: 8rem; top: 30%; left: -30%; opacity: 0; filter: blur(5px) drop-shadow(0 20px 10px rgba(0,0,0,0.9)); z-index: 999; pointer-events: none; }
+        .owl-shadow.fly { animation: owlFly 2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        @keyframes owlFly { 0% { left: -30%; opacity: 0; transform: scale(0.6) rotate(-15deg); } 30% { opacity: 0.15; } 100% { left: 130%; opacity: 0; transform: scale(1.5) rotate(15deg) translateY(-50px); } }
+
+        .falling-feather { position: fixed; font-size: 1.5rem; opacity: 0; z-index: 998; pointer-events: none; filter: brightness(0.7); }
+        .falling-feather.fall { animation: featherFall 6s ease-in-out forwards; }
+        @keyframes featherFall { 0% { top: 20%; left: 40%; opacity: 0; transform: rotate(0deg); } 20% { opacity: 0.6; } 100% { top: 110%; left: 60%; opacity: 0; transform: rotate(720deg); } }
+
+        /* ✉️ Hogwarts Envelope ✉️ */
+        .hogwarts-envelope { position: relative; width: 220px; height: 140px; margin: 30px auto 10px auto; perspective: 1000px; animation: float 4s ease-in-out infinite; }
+        .envelope-paper { width: 100%; height: 100%; background: linear-gradient(135deg, #e8d2a8, #d4b886); border-radius: 8px; box-shadow: 0 15px 40px rgba(0,0,0,.8), inset 0 0 20px rgba(90,60,20,.3); border: 1px solid rgba(90,60,20,.5); position: relative; overflow: hidden; }
+        .envelope-paper::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(90,60,20,.03) 10px, rgba(90,60,20,.03) 20px); }
+        .letter-to { position: absolute; top: 45%; left: 50%; transform: translate(-50%,-50%); font-family: 'Cinzel', serif; font-size: 1.2rem; font-weight: 600; color: #2a1a08; letter-spacing: 2px; white-space: nowrap; opacity: 0.8;}
+        .owl-mark { position: absolute; bottom: 10px; right: 15px; font-size: 1.5rem; opacity: .5; filter: sepia(1) drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+        .wax-seal { position: absolute; top: -15px; right: -15px; width: 55px; height: 55px; background: #5a0a12; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #d4b886; font-size: 1.4rem; box-shadow: 0 0 20px rgba(0,0,0,.9); z-index: 5; border: 2px solid #3a050a; }
+
+        .tap-text { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: #666; margin-top: 30px; letter-spacing: 2px; font-style: italic; animation: blink 3s infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* --- Letter Screen --- */
+        #letter-screen { position: relative; background: var(--dark-bg); background-size: 400% 400%; animation: gradientBG 20s ease infinite; min-height: 100vh; height: auto; display: flex; flex-direction: column; align-items: center; padding: 40px 20px 100px 20px; z-index: 10; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* 🌙 Moon Glow 🌙 */
+        .moon-glow { position: fixed; top: 5%; right: 5%; width: 250px; height: 250px; background: radial-gradient(circle, rgba(200,230,255,.15), transparent 70%); border-radius: 50%; filter: blur(30px); z-index: 0; pointer-events: none; transition: opacity 1s; }
+
+        /* 🕯️ Floating Candles 🕯️ */
+        .floating-candle { position: fixed; font-size: 2.2rem; opacity: .6; z-index: 1; pointer-events: none; animation: floatingCandle 7s ease-in-out infinite; filter: drop-shadow(0 0 15px rgba(255, 222, 89, 0.4)); transition: opacity 1s; }
+        .candle1 { top: 15%; left: 10%; }
+        .candle2 { top: 25%; right: 12%; animation-delay: 2.5s; }
+        .candle3 { bottom: 20%; left: 15%; animation-delay: 5s; }
+        @keyframes floatingCandle { 0%, 100% { transform: translateY(0px) rotate(-3deg); } 50% { transform: translateY(-30px) rotate(3deg); } }
+
+        /* ⚡ Letter Content ⚡ */
+        .content-container {
+            position: relative; z-index: 2; max-width: 600px; text-align: center; color: #ebd8b7;
+            transform-style: preserve-3d; opacity: 0; transition: transform 0.1s;
+            background: rgba(10, 5, 2, 0.75); border: 1px solid rgba(212, 184, 134, 0.15); box-shadow: 0 30px 60px rgba(0,0,0,0.9), inset 0 0 40px rgba(212, 184, 134, 0.05); border-radius: 4px; padding: 40px 20px;
+            animation: lightningGlow 12s infinite alternate;
+        }
+        @keyframes lightningGlow { 0%, 40%, 45%, 100% { filter: brightness(1); } 42% { filter: brightness(1.2); } 43% { filter: brightness(1); } 44% { filter: brightness(1.3); } }
+        .unfold-effect { animation: paperUnfold 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        @keyframes paperUnfold { 0% { opacity: 0; transform: rotateX(-90deg) translateY(-50px) scale(0.9); filter: blur(10px); } 100% { opacity: 1; transform: rotateX(0deg) translateY(0) scale(1); filter: blur(0); } }
+
+        /* --- SWIPE SLIDER --- */
+        .slider-container { position: relative; width: 180px; height: 180px; border-radius: 5px; margin: 0 auto 35px auto; border: 1px solid rgba(212, 184, 134, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; background: #000; touch-action: pan-y; filter: sepia(0.3) contrast(1.1); }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.8s ease-in-out; }
+        .slide.active { opacity: 1; }
+
+        .birthday-title { font-family: 'Cinzel', serif; font-weight: 600; font-size: 1.8rem; color: #d4b886; margin-bottom: 25px; letter-spacing: 2px; text-shadow: 0 0 20px rgba(212, 184, 134, 0.2); line-height: 1.4;}
+
+        /* 📚 Library Scraps 📚 */
+        .paper-scrap { position: fixed; width: 8px; height: 12px; background: #d4b886; opacity: 0.2; pointer-events: none; z-index: 1; animation: paperFlutter 8s linear infinite; }
+        @keyframes paperFlutter { 0% { transform: translateY(-10vh) rotate(0deg) rotateX(0deg); } 100% { transform: translateY(110vh) rotate(360deg) rotateX(360deg); } }
+
+        /* ✨ Magical Text Reveal ✨ */
+        .letter-text { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; line-height: 1.8; text-align: center; margin-bottom: 30px; color: #c8b79d; font-weight: 400; min-height: 1em; text-shadow: 0 2px 5px rgba(0,0,0,0.9); }
+        .glow-letter { display: inline-block; animation: textSparkle 1.5s ease forwards; opacity: 0; }
+        .space-letter { display: inline-block; width: 0.4em; }
+        @keyframes textSparkle {
+            0% { opacity: 0; text-shadow: 0 0 30px var(--wand-core), 0 0 60px var(--wand-core); transform: scale(1.1); color: #fff; }
+            50% { opacity: 1; text-shadow: 0 0 15px var(--wand-core); color: var(--wand-core); }
+            100% { opacity: 1; text-shadow: none; color: inherit; transform: scale(1); }
+        }
+
+        /* --- Interactive Cake --- */
+        .interactive-cake-section { margin-top: 50px; opacity: 0; transition: all 1s ease; }
+        .interactive-cake-section.show { opacity: 1; }
+        .wish-text { font-family: 'Cinzel', serif; font-size: 0.8rem; color: #7a6b58; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 40px; animation: pulseText 3s infinite; transition: color 0.5s; }
+        @keyframes pulseText { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; color: #d4b886; text-shadow: 0 0 15px rgba(212, 184, 134, 0.4); } }
+
+        .cake-slice { position: relative; width: 120px; height: 45px; margin: 0 auto; background: #2a1a08; border-radius: 5px 5px 2px 2px; border-top: 6px solid #d4b886; transition: transform 0.2s; box-shadow: 0 15px 30px rgba(0,0,0,0.9); }
+        .cake-slice:active { transform: scale(0.95); }
+        .flame { position: absolute; top: -35px; left: 50%; transform: translateX(-50%); width: 14px; height: 28px; background: #ffde59; border-radius: 50% 50% 20% 20%; box-shadow: 0 0 20px #ffde59, 0 0 40px #ff9d00; animation: flicker 0.4s infinite alternate; }
+        .flame.out { transform: translateX(-50%) scale(0); opacity: 0; }
+        @keyframes flicker { 0% { transform: translateX(-50%) scale(1); filter: brightness(1); } 100% { transform: translateX(-48%) scale(1.05); filter: brightness(1.3); } }
+
+        /* 🪄 Stage 4: Spell Casting Hold Button 🪄 */
+        #hold-section { margin-top: 40px; display: none; opacity: 0; transition: opacity 1s; position: relative; }
+
+        .magic-circle {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 200px; height: 200px; border: 1px dashed rgba(212, 184, 134, 0.3); border-radius: 50%;
+            animation: rotateMagic 10s linear infinite; opacity: 0; transition: opacity 0.8s; z-index: -2;
+            box-shadow: 0 0 30px rgba(212, 184, 134, 0.05); pointer-events: none;
+        }
+        @keyframes rotateMagic { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        .hold-btn {
+            background: rgba(5,2,0,0.9); border: 1px solid #d4b886; color: #d4b886; padding: 18px 45px;
+            border-radius: 2px; font-family: 'Cinzel', serif; letter-spacing: 3px; font-size: 0.9rem;
+            position: relative; overflow: hidden; user-select: none; transition: transform 0.2s, box-shadow 0.4s, color 0.4s, border-color 0.4s;
+            outline: none; box-shadow: 0 0 25px rgba(212, 184, 134, 0.08); z-index: 1; text-transform: uppercase;
+        }
+        .hold-progress { position: absolute; bottom: 0; left: 0; height: 100%; width: 0%; background: rgba(212, 184, 134, 0.15); z-index: -1; transition: background 0.3s; }
+
+        /* ⚡ CASTING SPELL STATE ⚡ */
+        .casting-spell { animation: spellShake 0.1s infinite !important; box-shadow: 0 0 50px var(--wand-core), inset 0 0 20px var(--wand-core) !important; color: #fff !important; text-shadow: 0 0 15px var(--wand-core); border-color: #fff; }
+        .casting-spell .hold-progress { background: rgba(255,255,255,0.2); }
+        @keyframes spellShake { 0% { transform: translate(1px, 1px) scale(0.99); } 50% { transform: translate(-1px, -1px) scale(0.99); } 100% { transform: translate(1px, -1px) scale(0.99); } }
+
+        /* --- Stage 5: Plot Twist / Pensieve Effect 🌫️ --- */
+        #plot-twist-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+            /* 🌫️ 3. Blur Background */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .twist-text { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-style: italic; color: rgba(255, 255, 255, 0.5); opacity: 0; transition: opacity 1.5s ease; margin-bottom: 25px; letter-spacing: 2px; z-index: 2; position: relative; }
+
+        /* 💀 13. Horcrux-Level Ending 💀 */
+        .final-secret { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: #fff; opacity: 0; transition: opacity 3s ease; text-align: center; line-height: 1.6; z-index: 2; position: relative; }
+        .always-text { font-family: 'Cinzel', serif; font-size: 3.5rem; color: #d4b886; display: block; margin-top: 20px; letter-spacing: 8px; text-shadow: 0 0 30px rgba(212, 184, 134, 0.4); }
+
+        /* 📜 4. Tiny Ending Quote 📜 */
+        .tiny-quote { font-family: 'Cinzel', serif; font-size: 0.7rem; color: rgba(212, 184, 134, 0.4); margin-top: 40px; letter-spacing: 5px; text-transform: uppercase; animation: pulseText 4s infinite; }
+
+        /* ✨ 8. Patronus Reveal ✨ */
+        .patronus-burst {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vw; height: 100vh;
+            background: radial-gradient(circle, rgba(200,230,255,1) 0%, rgba(100,150,255,0.5) 30%, transparent 70%);
+            mix-blend-mode: screen; pointer-events: none; z-index: 9999; animation: patronusExpand 4s ease-out forwards;
+        }
+        @keyframes patronusExpand { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0); filter: blur(0px); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(10px); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(2); filter: blur(40px); } }
+
+        /* ✨ Wand Core / Magic Dust & Footsteps ✨ */
+        .magic-dust { position: absolute; pointer-events: none; width: 3px; height: 3px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px var(--wand-core), 0 0 20px var(--wand-core); animation: dustFade 1.2s linear forwards; z-index: 9999; }
+        @keyframes dustFade { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(-30px); opacity: 0; } }
+
+        .footstep { position: absolute; width: 12px; height: 20px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 50'%3E%3Cpath fill='rgba(90,60,20,0.5)' d='M15 0 C25 0 30 15 25 30 C20 45 10 50 5 40 C0 30 5 0 15 0 Z'/%3E%3C/svg%3E"); background-size: cover; opacity: 0; animation: footprintFade 5s forwards; z-index: 1; pointer-events: none; filter: mix-blend-mode(multiply); }
+        @keyframes footprintFade { 0% { opacity: 0; transform: scale(0.8); } 10% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.2); } }
+
+        /* 🪄 2. Lumos / Nox Button 🪄 */
+        #lumos-btn {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(10, 5, 2, 0.85); border: 1px solid #d4b886; color: #d4b886; padding: 12px 30px; border-radius: 30px;
+            font-family: 'Cinzel', serif; font-size: 1rem; letter-spacing: 4px; z-index: 9999; backdrop-filter: blur(5px);
+            transition: all 0.5s; outline: none; box-shadow: 0 0 20px rgba(212, 184, 134, 0.2); text-transform: uppercase;
+        }
+        body.lumos-active { background-color: #1a1a24; }
+        body.lumos-active::before { opacity: 0.8; background-blend-mode: color-dodge; }
+        body.lumos-active #lumos-btn { background: rgba(255, 255, 255, 0.95); color: #000; border-color: #fff; box-shadow: 0 0 40px rgba(255,255,255,0.8), inset 0 0 10px rgba(0,0,0,0.1); font-weight: bold; }
+        body.lumos-active .letter-text { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        body.lumos-active .content-container { background: rgba(20, 20, 30, 0.8); border-color: rgba(255,255,255,0.2); }
+
+        /* 🕯️ Memory Button 🕯️ */
+        #memory-btn {
+            margin-top: 35px; padding: 16px 32px; border-radius: 40px; border: 1px solid rgba(212, 184, 134, .35);
+            background: rgba(255, 255, 255, .04); color: #d4b886; font-family: 'Cinzel', serif; font-size: .85rem;
+            letter-spacing: 3px; backdrop-filter: blur(10px); box-shadow: 0 0 30px rgba(212, 184, 134, .08), inset 0 0 10px rgba(255, 255, 255, .03);
+            opacity: 0; transform: translateY(25px); transition: 1s; cursor: pointer;
+        }
+        #memory-btn.show { opacity: 1; transform: translateY(0); }
+        #memory-btn:active { transform: scale(.96); }
+
+        /* 🤫 6. Forbidden Toast 🤫 */
+        .secret-toast { font-family: 'Cinzel', serif; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.9); border: 1px solid #5a0a12; color: #d4b886; padding: 15px 30px; border-radius: 2px; font-size: 0.9rem; letter-spacing: 2px; z-index: 10000; opacity: 0; transition: opacity 0.5s; pointer-events: none; box-shadow: 0 0 30px rgba(90,10,18,0.4); text-transform: uppercase; }
+        .secret-toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div id="white-flash"></div>
+    <div class="fog fog1"></div>
+    <div class="fog fog2"></div>
+    <div class="owl-shadow" id="owl-shadow">🦉</div>
+    <div class="falling-feather" id="feather">🪶</div>
+
+    <button id="lumos-btn">🪄 Lumos</button>
+
+    <div class="paper-scrap" style="left: 10vw; animation-delay: 0s;"></div>
+    <div class="paper-scrap" style="left: 85vw; animation-delay: 4s;"></div>
+    <div class="paper-scrap" style="left: 45vw; animation-delay: 7s;"></div>
+
+    <audio id="bg-music" src="song.mp3" preload="auto"></audio>
+    <audio id="open-sound" src="open.mp3" preload="auto"></audio>
+    <audio id="owl-sound" src="owl.mp3" preload="auto"></audio>
+    <audio id="blow-sound" src="blow.mp3" preload="auto"></audio>
+    <audio id="typing-sound" src="typing.mp3" loop preload="auto"></audio>
+    <audio id="heartbeat-sound" src="heartbeat.mp3" loop preload="auto"></audio>
+    <audio id="suspense-sound" src="suspense.mp3" preload="auto"></audio>
+    <audio id="wind-sound" src="wind.mp3" loop preload="auto"></audio>
+    <audio id="fire-sound" src="fire.mp3" loop preload="auto"></audio>
+    <audio id="thunder-sound" src="thunder.mp3" loop preload="auto"></audio>
+    <audio id="dementor-sound" src="dementor.mp3" preload="auto"></audio>
+    <audio id="patronus-sound" src="patronus.mp3" preload="auto"></audio>
+    <audio id="lumos-sound" src="lumos.mp3" preload="auto"></audio>
+    <audio id="nox-sound" src="nox.mp3" preload="auto"></audio>
+
+    <div id="intro-screen" class="screen">
+        <p id="cinematic-1" class="cinematic-text">Some connections are written in magic.</p>
+        <p id="cinematic-2" class="cinematic-text">You were expected...</p>
+        <p id="cinematic-3" class="cinematic-text">The magic recognized you, <span id="intro-name">Omar</span>.</p>
+    </div>
+
+    <div id="envelope-screen" class="screen hidden">
+        <div class="envelope-container" id="open-mail-btn">
+            <div class="hogwarts-envelope">
+               <div class="wax-seal">⚡</div>
+               <div class="envelope-paper">
+                  <span class="letter-to"><span id="envelope-name">Omar</span></span>
+                  <span class="owl-mark">🦉</span>
+               </div>
+            </div>
+            <div class="tap-text">Open it.</div>
+        </div>
+    </div>
+
+    <div id="letter-screen" class="screen hidden">
+        <div class="moon-glow"></div>
+        <div class="floating-candle candle1">🕯️</div>
+        <div class="floating-candle candle2">🕯️</div>
+        <div class="floating-candle candle3">🕯️</div>
+
+        <div class="content-container" id="main-letter-content">
+
+            <div class="slider-container" id="anim-img">
+                <img src="image1.jpg" class="slide active" onerror="this.remove()">
+                <img src="image2.jpg" class="slide" onerror="this.remove()">
+                <img src="image3.jpg" class="slide" onerror="this.remove()">
+            </div>
+
+            <h1 class="birthday-title" id="anim-title">Written Somewhere Between The Stars</h1>
+
+            <p class="letter-text type-text" id="first-paragraph" data-text="You didn’t just grow older… you became someone even stronger than before."></p>
+            <p class="letter-text type-text" data-text="The things you survived… they say more about you than words ever could."></p>
+            <p class="letter-text type-text" data-text="I just want you to take a moment to look back and be incredibly proud of yourself."></p>
+            <p class="letter-text final-p" style="font-family: 'Cinzel', serif; color: #d4b886; font-size: 1.1rem; margin-top: 40px; opacity:0; transition: 1s; letter-spacing: 1px;">You're my brother, my best friend… my person, my everything. Once again… happy birthday. You mean more to me than you know.</p>
+
+            <div class="interactive-cake-section" id="interactive-cake">
+                <p class="wish-text" id="wish-text">Make a wish 🕯️</p>
+                <div class="cake-slice" id="cake">
+                    <div class="candle-container"><div class="flame" id="flame"></div><div class="candle-body"></div></div>
+                </div>
+            </div>
+
+            <div id="hold-section">
+                <div class="magic-circle" id="magic-circle"></div>
+                <button class="hold-btn" id="hold-btn"><div class="hold-progress" id="hold-progress"></div>Hold</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="plot-twist-screen">
+        <p class="twist-text" id="twist-1">Some connections were never meant to fade...</p>
+        <p class="twist-text" id="twist-2">Because magic fades...</p>
+        <div class="final-secret" id="final-secret">
+            After all this time?<br>
+            <span class="always-text">Always.</span>
+            <span style="font-size:1rem; color:rgba(255,255,255,0.3); font-family: 'Poppins', sans-serif; display:block; margin-top:40px; letter-spacing: 2px;">- Sofa</span>
+
+            <div class="tiny-quote">Until the very end.</div>
+
+            <button id="memory-btn">Open the whole memory 🕯️</button>
+        </div>
+    </div>
+
+    <div class="secret-toast" id="secret-toast">Curiosity isn't always safe ⚡</div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('name') || "Peter";
+        document.getElementById('intro-name').innerText = name;
+        document.getElementById('envelope-name').innerText = name;
+
+        document.getElementById('first-paragraph').setAttribute('data-text', "You didn’t just grow older, " + name + "… you became someone even stronger than before.");
+
+        /* ⚡ 5. Wand Core Randomizer ⚡ */
+        const cores = ['#ffde59', '#c0c0c0', '#42a5f5']; // Gold, Silver, Blue
+        const myCore = cores[Math.floor(Math.random() * cores.length)];
+        document.documentElement.style.setProperty('--wand-core', myCore);
+
+        /* 🤫 6. Forbidden Interaction 🤫 */
+        document.addEventListener('contextmenu', e => {
+            e.preventDefault();
+            showToast("Curiosity isn't always safe ⚡");
+        });
+        document.addEventListener('keydown', e => {
+            if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                e.preventDefault();
+                showToast("Mischief managed.");
+            }
+        });
+
+        function showToast(msg) {
+            const toast = document.getElementById('secret-toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        /* 🪄 2. Lumos / Nox Button 🪄 */
+        const lumosBtn = document.getElementById('lumos-btn');
+        let isLumos = false;
+        lumosBtn.addEventListener('click', () => {
+            isLumos = !isLumos;
+            if(isLumos) {
+                document.body.classList.add('lumos-active');
+                lumosBtn.innerText = '🪄 Nox';
+                document.getElementById('lumos-sound').play().catch(e=>{});
+            } else {
+                document.body.classList.remove('lumos-active');
+                lumosBtn.innerText = '🪄 Lumos';
+                document.getElementById('nox-sound').play().catch(e=>{});
+            }
+            vibratePhone(50);
+        });
+
+        /* 🪄 15. Secret Spell Inputs 🪄 */
+        let keyBuffer = '';
+        document.addEventListener('keydown', e => {
+            keyBuffer += e.key.toLowerCase();
+            if(keyBuffer.length > 20) keyBuffer = keyBuffer.slice(-20);
+            if(keyBuffer.includes('lumos') && !isLumos) { keyBuffer=''; lumosBtn.click(); }
+            if(keyBuffer.includes('nox') && isLumos) { keyBuffer=''; lumosBtn.click(); }
+            if(keyBuffer.includes('always')) { keyBuffer=''; showToast("After all this time..."); }
+            if(keyBuffer.includes('expecto')) { keyBuffer=''; triggerPatronus(); }
+        });
+
+        /* ✨ Magic Dust & Marauder Footsteps ✨ */
+        let stepToggle = false;
+        document.addEventListener('mousemove', (e) => { createDustAndSteps(e.pageX, e.pageY); });
+        document.addEventListener('touchmove', (e) => { createDustAndSteps(e.touches[0].pageX, e.touches[0].pageY); }, {passive: true});
+
+        function createDustAndSteps(x, y) {
+            if(Math.random() < 0.4) {
+                const dust = document.createElement('div');
+                dust.className = 'magic-dust';
+                dust.style.left = x + 'px';
+                dust.style.top = y + 'px';
+                document.body.appendChild(dust);
+                setTimeout(() => dust.remove(), 1200);
+            }
+            if(Math.random() < 0.05) {
+                const step = document.createElement('div');
+                step.className = 'footstep';
+                step.style.left = x + 'px';
+                step.style.top = y + 'px';
+                step.style.transform = `rotate(${stepToggle ? 15 : -15}deg)`;
+                stepToggle = !stepToggle;
+                document.body.appendChild(step);
+                setTimeout(() => step.remove(), 5000);
+            }
+        }
+
+        const bgMusic = document.getElementById('bg-music');
+        const windSound = document.getElementById('wind-sound');
+        const fireSound = document.getElementById('fire-sound');
+        const thunderSound = document.getElementById('thunder-sound');
+
+        let currentStage = 1;
+
+        function vibratePhone(pattern) { if(navigator.vibrate) navigator.vibrate(pattern); }
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        async function runIntro() {
+            document.getElementById('suspense-sound').play().catch(e=>{});
+
+            const c1 = document.getElementById('cinematic-1'), c2 = document.getElementById('cinematic-2'), c3 = document.getElementById('cinematic-3');
+            await sleep(1000); c1.classList.add('show'); await sleep(2500); c1.classList.remove('show'); await sleep(1000);
+            c2.classList.add('show'); await sleep(2000); c2.classList.remove('show'); await sleep(1000);
+            c3.classList.add('show'); await sleep(3000);
+
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('envelope-screen').classList.remove('hidden');
+            currentStage = 2;
+
+            setTimeout(() => {
+                if(currentStage >= 2 && currentStage < 5) {
+                    document.getElementById('owl-shadow').classList.add('fly');
+                    document.getElementById('feather').classList.add('fall');
+                    document.getElementById('owl-sound').volume = 0.4;
+                    document.getElementById('owl-sound').play().catch(e=>{});
+                }
+            }, 40000);
+        }
+        window.onload = runIntro;
+
+        document.getElementById('open-mail-btn').addEventListener('click', async () => {
+            if(currentStage !== 2) return;
+            currentStage = 2.5;
+
+            document.getElementById('open-sound').play().catch(e=>{});
+            vibratePhone([100, 50, 100]);
+
+            document.getElementById('envelope-screen').classList.add('platform-dash');
+
+            await sleep(1500);
+
+            document.getElementById('envelope-screen').classList.add('hidden');
+            document.getElementById('letter-screen').classList.remove('hidden');
+
+            windSound.volume = 0.2; windSound.play().catch(e=>{});
+            fireSound.volume = 0.3; fireSound.play().catch(e=>{});
+            thunderSound.volume = 0.1; thunderSound.play().catch(e=>{});
+            bgMusic.volume = 0.4; bgMusic.play().catch(e=>{});
+
+            await sleep(800);
+            document.getElementById('main-letter-content').classList.add('unfold-effect');
+
+            currentStage = 3;
+            startAutoSlider();
+            animateContent();
+
+            setTimeout(triggerDementor, 20000);
+        });
+
+        async function triggerDementor() {
+            if(currentStage !== 3) return;
+
+            bgMusic.volume = 0; windSound.volume = 0; fireSound.volume = 0; thunderSound.volume = 0;
+            document.body.classList.add('dementor-active');
+            document.getElementById('dementor-sound').play().catch(e=>{});
+            vibratePhone([500, 1000]);
+
+            await sleep(2500);
+
+            document.getElementById('patronus-sound').volume = 0.5;
+            document.getElementById('patronus-sound').play().catch(e=>{});
+            document.body.classList.remove('dementor-active');
+
+            const flash = document.getElementById('white-flash');
+            flash.classList.add('flash-active');
+
+            await sleep(200);
+            flash.classList.remove('flash-active');
+
+            bgMusic.volume = 0.4; windSound.volume = 0.2; fireSound.volume = 0.3; thunderSound.volume = 0.1;
+        }
+
+        async function animateContent() {
+            await sleep(1500); document.getElementById('anim-img').style.opacity = "1";
+            await sleep(500); document.getElementById('anim-title').style.opacity = "1";
+            await sleep(1000);
+
+            const paragraphs = document.querySelectorAll('.type-text');
+            document.getElementById('typing-sound').volume = 0.4;
+            document.getElementById('typing-sound').play().catch(e=>{});
+
+            for(let p of paragraphs) {
+                p.style.opacity = "1";
+                let text = p.getAttribute('data-text');
+                p.innerHTML = '';
+                for(let i=0; i<text.length; i++) {
+                    let char = text.charAt(i);
+                    let span = document.createElement('span');
+
+                    if (char === ' ') {
+                        span.innerHTML = '&nbsp;';
+                        span.className = 'space-letter';
+                    } else {
+                        span.innerText = char;
+                        span.className = 'glow-letter';
+                    }
+
+                    p.appendChild(span);
+                    await sleep(35);
+                }
+                await sleep(600);
+            }
+            document.getElementById('typing-sound').pause();
+
+            await sleep(800);
+            document.querySelector('.final-p').style.opacity = "1";
+
+            let volInterval = setInterval(() => {
+                if(bgMusic.volume < 0.7) bgMusic.volume += 0.02;
+                else clearInterval(volInterval);
+            }, 500);
+
+            await sleep(2000);
+            document.getElementById('interactive-cake').classList.add('show');
+        }
+
+        const slider = document.getElementById('anim-img');
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0, startX = 0, autoSlideInterval;
+        function nextSlide() { slides[currentSlide].classList.remove('active'); currentSlide = (currentSlide + 1) % slides.length; slides[currentSlide].classList.add('active'); }
+        function prevSlide() { slides[currentSlide].classList.remove('active'); currentSlide = (currentSlide - 1 + slides.length) % slides.length; slides[currentSlide].classList.add('active'); }
+        function startAutoSlider() { if(slides.length <= 1) return; autoSlideInterval = setInterval(nextSlide, 4000); }
+        if(slides.length > 1) {
+            slider.addEventListener('touchstart', e => { startX = e.touches[0].clientX; clearInterval(autoSlideInterval); }, {passive: true});
+            slider.addEventListener('touchend', e => {
+                let endX = e.changedTouches[0].clientX;
+                if(startX - endX > 40) { nextSlide(); vibratePhone(15); } else if(endX - startX > 40) { prevSlide(); vibratePhone(15); }
+                startAutoSlider();
+            });
+        }
+
+        document.getElementById('cake').addEventListener('click', () => {
+            const flame = document.getElementById('flame');
+            if(!flame.classList.contains('out') && currentStage === 3){
+                document.getElementById('blow-sound').play().catch(e=>{});
+                vibratePhone([150, 50, 150]);
+                flame.classList.add('out');
+
+                const wText = document.getElementById('wish-text');
+                wText.style.opacity = '0';
+
+                setTimeout(() => {
+                    const hs = document.getElementById('hold-section');
+                    hs.style.display = 'block';
+                    setTimeout(() => {
+                        hs.style.opacity = '1';
+                        document.getElementById('magic-circle').style.opacity = '1';
+                    }, 50);
+                    currentStage = 4;
+                }, 2000);
+            }
+        });
+
+        const holdBtn = document.getElementById('hold-btn'), holdProgress = document.getElementById('hold-progress');
+        let progressVal = 0, holdInterval, spellParticlesInterval;
+
+        function startHoldBtn(e) {
+            e.stopPropagation();
+            document.getElementById('heartbeat-sound').play().catch(e=>{});
+
+            holdBtn.classList.add('casting-spell');
+            document.getElementById('magic-circle').style.boxShadow = `0 0 60px ${myCore}`;
+            bgMusic.volume = 0.2; vibratePhone(50);
+
+            spellParticlesInterval = setInterval(() => {
+                const rect = holdBtn.getBoundingClientRect();
+                createDustAndSteps(rect.left + Math.random() * rect.width, rect.top + Math.random() * rect.height);
+            }, 30);
+
+            holdInterval = setInterval(() => { progressVal += 2; holdProgress.style.width = `${progressVal}%`; if(progressVal >= 100) { clearInterval(holdInterval); clearInterval(spellParticlesInterval); triggerPlotTwist(); } }, 50);
+        }
+
+        function endHoldBtn() {
+            clearInterval(holdInterval);
+            clearInterval(spellParticlesInterval);
+            if(progressVal < 100 && currentStage === 4) {
+                progressVal = 0; holdProgress.style.width = `0%`;
+                holdBtn.classList.remove('casting-spell');
+                document.getElementById('magic-circle').style.boxShadow = "0 0 30px rgba(212, 184, 134, 0.05)";
+                document.getElementById('heartbeat-sound').pause(); document.getElementById('heartbeat-sound').currentTime = 0;
+                bgMusic.volume = 0.7;
+            }
+        }
+        holdBtn.addEventListener('mousedown', startHoldBtn); holdBtn.addEventListener('touchstart', startHoldBtn, {passive: true});
+        window.addEventListener('mouseup', endHoldBtn); window.addEventListener('touchend', endHoldBtn);
+
+        async function triggerPlotTwist() {
+            currentStage = 5;
+            holdBtn.classList.remove('casting-spell');
+
+            // ⚡ Auto-scroll to top to ensure the final scene is perfectly centered
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // 🎬 THE CINEMATIC SILENCE 🎬
+            bgMusic.volume = 0;
+            document.getElementById('heartbeat-sound').pause(); windSound.pause(); fireSound.pause(); thunderSound.pause();
+            vibratePhone([50, 50]);
+
+            const suspense = document.getElementById('suspense-sound');
+            suspense.currentTime = 0; suspense.play().catch(e=>{});
+
+            const twistScreen = document.getElementById('plot-twist-screen');
+            twistScreen.style.opacity = '1'; twistScreen.style.pointerEvents = 'all';
+            document.getElementById('lumos-btn').style.display = 'none';
+
+            await sleep(1500);
+
+            document.getElementById('twist-1').style.opacity = '1'; await sleep(2500);
+            document.getElementById('twist-2').style.opacity = '1'; await sleep(2000);
+
+            /* 💥 Impact Shake 💥 */
+            document.body.classList.add('impact-shake');
+            const flash = document.getElementById('white-flash');
+            flash.classList.add('flash-active');
+            vibratePhone([800, 200, 800]);
+
+            setTimeout(async () => {
+                flash.classList.remove('flash-active');
+                document.body.classList.remove('impact-shake');
+
+                await sleep(500);
+
+                document.getElementById('twist-1').style.display = 'none'; document.getElementById('twist-2').style.display = 'none';
+
+                /* ✨ 8. Patronus Reveal Effect ✨ */
+                triggerPatronus();
+                document.getElementById('patronus-sound').volume = 0.8;
+                document.getElementById('patronus-sound').play().catch(e=>{});
+
+                await sleep(1000);
+                document.getElementById('final-secret').style.opacity = '1';
+
+                setTimeout(() => {
+                    document.getElementById('memory-btn').classList.add('show');
+                }, 1800);
+
+                bgMusic.volume = 0.8;
+                bgMusic.play().catch(e=>{});
+            }, 500);
+        }
+
+        function triggerPatronus() {
+            const p = document.createElement('div');
+            p.className = 'patronus-burst';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 4000);
+        }
+
+        let lastTapTime = 0;
+        document.addEventListener('touchstart', (e) => {
+            if(e.target.closest('button') || e.target.closest('#cake') || e.target.closest('.slider-container') || currentStage > 4) return;
+            const currentTime = new Date().getTime();
+            if (currentTime - lastTapTime < 300) {
+                vibratePhone([50, 50]);
+                e.preventDefault();
+            }
+            lastTapTime = currentTime;
+        }, {passive: false});
+
+        /* 🕯️ 6. Memory Button Fade Effect & ✨ 2. Wand Spark */
+        document.getElementById('memory-btn')?.addEventListener('click', (e) => {
+            vibratePhone([40, 20, 40]);
+
+            // 🪄 Spark burst around the button click
+            for(let i=0; i<15; i++) {
+                setTimeout(() => {
+                    const dustX = e.pageX !== undefined ? e.pageX : (e.touches ? e.touches[0].pageX : window.innerWidth/2);
+                    const dustY = e.pageY !== undefined ? e.pageY : (e.touches ? e.touches[0].pageY : window.innerHeight/2);
+                    createDustAndSteps(dustX + (Math.random()*80-40), dustY + (Math.random()*80-40));
+                }, i*20);
+            }
+
+            const screen = document.getElementById('plot-twist-screen');
+            // Slow fade (Pensieve effect)
+            screen.style.transition = 'opacity 2.5s ease, backdrop-filter 2.5s ease';
+            screen.style.opacity = '0';
+            screen.style.backdropFilter = 'blur(0px)';
+
+            setTimeout(() => {
+                screen.style.display = 'none';
+                document.getElementById('letter-screen').scrollIntoView({ behavior: 'smooth' });
+
+                // Show lumos button again
+                document.getElementById('lumos-btn').style.display = 'block';
+
+                bgMusic.volume = 0.45;
+                bgMusic.play();
+            }, 2500); // 2.5 seconds matching the CSS transition
+        });
+
+    </script>
+</body>
+</html>
