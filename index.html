@@ -501,7 +501,7 @@
             document.getElementById('main-letter-content').classList.add('unfold-effect');
 
             currentStage = 3;
-            startAutoSlider();
+            startAutoSlider(); // ✨ Slider logic initialized safely here!
             animateContent();
 
             setTimeout(triggerDementor, 20000);
@@ -574,20 +574,67 @@
             document.getElementById('interactive-cake').classList.add('show');
         }
 
+        /* --- SWIPE SLIDER LOGIC (SMART & CLEAN) --- */
         const slider = document.getElementById('anim-img');
-        const slides = document.querySelectorAll('.slide');
+        let slides = [];
         let currentSlide = 0, startX = 0, autoSlideInterval;
-        function nextSlide() { slides[currentSlide].classList.remove('active'); currentSlide = (currentSlide + 1) % slides.length; slides[currentSlide].classList.add('active'); }
-        function prevSlide() { slides[currentSlide].classList.remove('active'); currentSlide = (currentSlide - 1 + slides.length) % slides.length; slides[currentSlide].classList.add('active'); }
-        function startAutoSlider() { if(slides.length <= 1) return; autoSlideInterval = setInterval(nextSlide, 4000); }
-        if(slides.length > 1) {
-            slider.addEventListener('touchstart', e => { startX = e.touches[0].clientX; clearInterval(autoSlideInterval); }, {passive: true});
-            slider.addEventListener('touchend', e => {
-                let endX = e.changedTouches[0].clientX;
-                if(startX - endX > 40) { nextSlide(); vibratePhone(15); } else if(endX - startX > 40) { prevSlide(); vibratePhone(15); }
-                startAutoSlider();
-            });
+
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
         }
+
+        function prevSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        function startAutoSlider() {
+            /* Update slides array to only keep existing/loaded images */
+            slides = [...document.querySelectorAll('.slide')].filter(img => img.complete && img.naturalWidth > 0);
+
+            /* 0 Images: Hide completely */
+            if(slides.length === 0) {
+                slider.style.display = 'none';
+                return;
+            }
+
+            /* 1 Image: Static, no transition */
+            if(slides.length === 1) {
+                slides[0].classList.add('active');
+                slides[0].style.transition = 'none';
+                return;
+            }
+
+            /* 2+ Images: Full Slider */
+            clearInterval(autoSlideInterval);
+            autoSlideInterval = setInterval(nextSlide, 4000);
+        }
+
+        slider.addEventListener('touchstart', e => {
+            if(slides.length <= 1) return;
+            startX = e.touches[0].clientX;
+            clearInterval(autoSlideInterval);
+        }, {passive: true});
+
+        slider.addEventListener('touchend', e => {
+            if(slides.length <= 1) return;
+            let endX = e.changedTouches[0].clientX;
+
+            if(startX - endX > 40) {
+                nextSlide();
+                vibratePhone(15);
+            } else if(endX - startX > 40) {
+                prevSlide();
+                vibratePhone(15);
+            }
+            startAutoSlider();
+        });
+
+        /* --- End Slider Logic --- */
+
 
         document.getElementById('cake').addEventListener('click', () => {
             const flame = document.getElementById('flame');
